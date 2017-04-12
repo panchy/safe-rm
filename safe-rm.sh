@@ -19,9 +19,10 @@
 #Hard-coded configs to keep in mind.
 #built-in rm function can be still called as /bin/rm
 #Recycle Bin Directory Config File = $HOME/.safe-rm-config/.bindir
-
+#du -sch $(cat $HOME/.safe-rm-config/.bindir) | sort -hr  --> This function analyzes the Recycle Bin.
+#/bin/rm $(cat $HOME/.safe-rm-config/.bindir)/* -r --> This function should clear the Recycle Bin.
 configFolder=$HOME/.safe-rm-config
-initializerLine='function rm(){ if (( $# == 0 )); then $HOME/.safe-rm-config/safe-rm.sh; else mv $* "$(cat $HOME/.safe-rm-config/.bindir)" 2> /dev/null; fi; }' #note that this line is only serving as an example to initializerLine. Since the recycle-bin location will be replaced.
+initializerLine='function rm(){ if (( $# == 0 )); then $HOME/.safe-rm-config/safe-rm.sh; elif [[ $1 = "--clear" ]]; then /bin/rm -r $(cat $HOME/.safe-rm-config/.bindir)/* ; elif [[ $1 = "-a" ]]; then du -sch $(cat $HOME/.safe-rm-config/.bindir) | sort -hr; else mv $* "$(cat $HOME/.safe-rm-config/.bindir)" 2> /dev/null; fi; }'
 bashRc=~/.bashrc
 
 function endSession()
@@ -102,15 +103,7 @@ function checkIfInstalled(){
 
 }
 
-function analyzeBin()
-{
-    du -sch --max-depth=1 $(cat $HOME/.safe-rm-config/.bindir) | sort -hr
-}
 
-if (( $1 == "a" ))
-then
-    analyzeBin
-else
-    checkIfInstalled
-fi
+checkIfInstalled
+
 
