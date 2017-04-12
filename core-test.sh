@@ -22,17 +22,24 @@
 initializerLine="function rm(){ echo 'Safe removing file(s).';}"
 bashRc=~/.bashrc
 
+function endSession()
+{
+    clear
+    exit
+}
+
 function setBashRc()
 {
     echo "" >> $bashRc
     echo "$initializerLine" >> $bashRc
     dialog --title 'Finalizing' --msgbox "Installed safe-rm and safe-rm is running." 6 30
+    endSession
 }
 
 function setBinDirectory()
 {
     freeSpace=$(df -h / | awk 'FNR == 2 {print $4}')
-    dialog --title "Configuration" --yesno "You have $freeSpace free space in your disk. Would you like safe-rm to be installed on it's default path? ($HOME/SafeBin)." 12 60
+    dialog --title "Configuration" --yesno "You have $freeSpace free space in your disk. Would you like safe-rm to be installed on it's default path ($HOME/SafeBin)? y/n" 8 60
     dialogAnswer=$?
 
     if (( $dialogAnswer ==  0 )) #0 means a yes
@@ -57,39 +64,33 @@ function setBinDirectory()
 
 }
 
-
-
 function checkIfInstalled(){
 
     if grep -Fxq "$initializerLine" $bashRc
     then
-        echo "Safe remove service is running. Would you like to stop the service? y/n"
-
-        read answer
-    if [[ $answer == "y" ]]
-    then
-        sed -i "/$initializerLine/d" $bashRc
-    fi
-
+        dialog --title "Info" --yesno "Safe remove service is running. Would you like to stop the service? y/n" 6 60
+        answer=$?
+        if (( $answer ==  0 )) #0 means a yes
+        then
+            sed -i "/$initializerLine/d" $bashRc
+            dialog --title 'Info' --msgbox "Safe remove service has been stopped. Ending this terminal session." 6 30
+            endSession
+        else
+            dialog --title 'Info' --msgbox "Ending this terminal session." 6 30
+            endSession
+        fi
     else
-        echo "Safe remove service is not installed on this system. Would you like to run the service? y/n"
-
-        read answer
-
-    if [[ $answer == "y" ]] 
-    then
-        setBinDirectory
-    else
-        echo "Terminating."
-    fi
-
+        dialog --title "Info" --yesno "Safe remove service is not installed on this system. Would you like to run the service? y/n" 6 60
+        answer=$?
+        if (( $answer ==  0 )) #0 means a yes
+        then
+            setBinDirectory
+        else
+            dialog --title 'Info' --msgbox "Ending this terminal session." 6 30
+            endSession
+        fi
     fi
 
 }
 
-function start()
-{
-    checkIfInstalled
-}
-
-start
+checkIfInstalled
