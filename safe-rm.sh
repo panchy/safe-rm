@@ -22,7 +22,7 @@
 #du -sch $(cat $HOME/.safe-rm-config/.bindir) | sort -hr  --> This function analyzes the Recycle Bin.
 #/bin/rm $(cat $HOME/.safe-rm-config/.bindir)/* -r --> This function should clear the Recycle Bin.
 configFolder=$HOME/.safe-rm-config
-initializerLine='function rm(){ if (( $# == 0 )); then $HOME/.safe-rm-config/safe-rm.sh; elif [[ $1 = "--clear" ]]; then /bin/rm -r $(cat $HOME/.safe-rm-config/.bindir)/* ; elif [[ $1 = "-a" ]]; then du -sch $(cat $HOME/.safe-rm-config/.bindir) | sort -hr; else mv $* "$(cat $HOME/.safe-rm-config/.bindir)" 2> /dev/null; fi; }'
+initializerLine='function rm(){ if (( $# == 0 )); then $HOME/.safe-rm-config/safe-rm.sh; elif [[ $1 = "--clear" ]]; then /bin/rm -r $(cat $HOME/.safe-rm-config/.bindir)/*; elif [[ $1 = "-a" ]]; then du -sch $(cat $HOME/.safe-rm-config/.bindir) | sort -hr; else mv $* "$(cat $HOME/.safe-rm-config/.bindir)" 2> /dev/null; fi; }'
 bashRc=~/.bashrc
 
 function endSession()
