@@ -1,7 +1,6 @@
 #! /bin/bash
 
 #This script was coded for a linux project.
-#It was coded by Yiğit Can Parıltı in 2017.
 #Free to distribute or use. Under GNU license.
 
 #How does it work?
